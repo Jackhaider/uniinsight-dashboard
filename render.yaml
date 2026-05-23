@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: uniinsight-api
+    env: python
+    buildCommand: "cd python_ai && pip install -r requirements.txt"
+    startCommand: "cd python_ai && python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: uniinsight-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+
+databases:
+  - name: uniinsight-db
+    databaseName: uniinsight
+    user: uniadmin
+    plan: free

@@ -1,0 +1,16 @@
+scikit-learn
+pandas
+numpy
+fastapi
+uvicorn
+python-multipart
+pypdf
+python-docx
+python-pptx
+google-generativeai
+SQLAlchemy
+alembic
+psycopg2-binary
+passlib[bcrypt]
+python-jose[cryptography]
+pydantic-settings
