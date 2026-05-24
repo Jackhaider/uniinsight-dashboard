@@ -10,6 +10,8 @@ export const ROLES = {
   STUDENT: 'student'
 };
 
+import { mockFetch } from '../utils/mockApi';
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -19,7 +21,6 @@ export const AuthProvider = ({ children }) => {
       const response = await apiFetch('/users/me');
       if (response.ok) {
         const userData = await response.json();
-        // Set avatar mock for demo based on role
         userData.avatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${userData.role}`;
         setUser(userData);
       } else {
@@ -48,13 +49,19 @@ export const AuthProvider = ({ children }) => {
       formData.append('username', email);
       formData.append('password', password);
 
-      const response = await fetch(`${API_URL}/auth/login/access-token`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: formData,
-      });
+      let response;
+      try {
+        response = await fetch(`${API_URL}/auth/login/access-token`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: formData,
+        });
+      } catch (networkError) {
+        console.warn("Backend offline, using Mock Login!");
+        response = await mockFetch('/auth/login/access-token', { method: 'POST' });
+      }
 
       if (!response.ok) {
         setLoading(false);

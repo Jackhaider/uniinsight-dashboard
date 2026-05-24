@@ -1,3 +1,4 @@
+import { mockFetch } from './mockApi';
 export const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/v1';
 
 export const apiFetch = async (endpoint, options = {}) => {
@@ -21,7 +22,14 @@ export const apiFetch = async (endpoint, options = {}) => {
     },
   };
 
-  let response = await fetch(`${API_URL}${endpoint}`, config);
+  let response;
+  try {
+    response = await fetch(`${API_URL}${endpoint}`, config);
+  } catch (error) {
+    // If real backend is unreachable (e.g. on Vercel without Render backend), seamlessly use Mock API
+    console.warn("Real backend unreachable, falling back to Demo Mock Mode");
+    return await mockFetch(endpoint, config);
+  }
 
   if (response.status === 401) {
     const refreshToken = localStorage.getItem('uniinsight_refresh_token');
