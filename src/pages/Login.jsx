@@ -7,8 +7,13 @@ import './Login.css';
 const Login = () => {
   const { user, login, loading } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [displayEmail, setDisplayEmail] = useState('');
+  const [displayPassword, setDisplayPassword] = useState('');
+  
+  // Hidden actual credentials
+  const [actualEmail, setActualEmail] = useState('');
+  const [actualPassword, setActualPassword] = useState('');
+  
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -20,13 +25,17 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    if (!email || !password) {
+    
+    const finalEmail = actualEmail || displayEmail;
+    const finalPassword = actualPassword || displayPassword;
+    
+    if (!finalEmail || !finalPassword) {
       setError('Please enter both email and password');
       return;
     }
     
     try {
-      await login(email, password);
+      await login(finalEmail, finalPassword);
       navigate('/');
     } catch (err) {
       setError('Invalid email or password');
@@ -34,8 +43,20 @@ const Login = () => {
   };
 
   const fillDemo = (demoEmail) => {
-    setEmail(demoEmail);
-    setPassword('password');
+    setActualEmail(demoEmail);
+    setActualPassword('password');
+    setDisplayEmail('Just click Sign In button');
+    setDisplayPassword('password'); // Just visually filling it
+  };
+
+  const handleEmailChange = (e) => {
+    setDisplayEmail(e.target.value);
+    setActualEmail(''); // reset hidden email if user starts typing manually
+  };
+
+  const handlePasswordChange = (e) => {
+    setDisplayPassword(e.target.value);
+    setActualPassword('');
   };
 
   return (
@@ -53,7 +74,7 @@ const Login = () => {
           <h2>Welcome to UniInsight</h2>
           <p>Sign in to your account</p>
 
-          <form onSubmit={handleSubmit} className="login-form">
+          <form onSubmit={handleSubmit} className="login-form" noValidate>
             {error && <div className="error-message" style={{ color: '#FF3B30', background: '#ffebe9', padding: '10px', borderRadius: '8px', marginBottom: '15px', fontSize: '0.9rem' }}>{error}</div>}
             
             <div className="input-group" style={{ marginBottom: '15px' }}>
@@ -61,9 +82,9 @@ const Login = () => {
               <div className="input-wrapper" style={{ position: 'relative' }}>
                 <Mail size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#86868b' }} />
                 <input 
-                  type="email" 
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  type="text" 
+                  value={displayEmail}
+                  onChange={handleEmailChange}
                   placeholder="name@uniinsight.edu" 
                   style={{ width: '100%', padding: '12px 12px 12px 40px', borderRadius: '8px', border: '1px solid #d2d2d7', fontSize: '1rem', boxSizing: 'border-box' }}
                 />
@@ -76,8 +97,8 @@ const Login = () => {
                 <Lock size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#86868b' }} />
                 <input 
                   type="password" 
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={displayPassword}
+                  onChange={handlePasswordChange}
                   placeholder="••••••••" 
                   style={{ width: '100%', padding: '12px 12px 12px 40px', borderRadius: '8px', border: '1px solid #d2d2d7', fontSize: '1rem', boxSizing: 'border-box' }}
                 />
