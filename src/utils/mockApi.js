@@ -45,16 +45,16 @@ export const mockFetch = async (endpoint, options = {}) => {
 
   // Login Mock
   if (endpoint.includes('/auth/login/access-token')) {
-    // In FormData, it's a bit tricky to parse without knowing format, but we only care about if it succeeded
-    // Since it's a demo, just always approve it
+    const email = options.body ? options.body.get('username') : 'student1@uniinsight.edu';
+    localStorage.setItem('mock_demo_email', email);
     return createResponse({ access_token: 'mock_access_token', refresh_token: 'mock_refresh_token', token_type: 'bearer' });
   }
 
   // Current User Mock
   if (endpoint.includes('/users/me')) {
-    // We guess the role based on localStorage or default to student
-    // A real mock would decode a JWT. We will just return student as fallback
-    return createResponse(MOCK_USERS['student1@uniinsight.edu']);
+    const email = localStorage.getItem('mock_demo_email') || 'student1@uniinsight.edu';
+    const mockUser = MOCK_USERS[email] || MOCK_USERS['student1@uniinsight.edu'];
+    return createResponse(mockUser);
   }
 
   // Student Leaderboard

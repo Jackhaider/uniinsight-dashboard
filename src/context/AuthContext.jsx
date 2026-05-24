@@ -60,7 +60,7 @@ export const AuthProvider = ({ children }) => {
         });
       } catch (networkError) {
         console.warn("Backend offline, using Mock Login!");
-        response = await mockFetch('/auth/login/access-token', { method: 'POST' });
+        response = await mockFetch('/auth/login/access-token', { method: 'POST', body: formData });
       }
 
       if (!response.ok) {
