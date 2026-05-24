@@ -38,7 +38,11 @@ const Login = () => {
       await login(finalEmail, finalPassword);
       navigate('/');
     } catch (err) {
-      setError('Invalid email or password');
+      if (err.message === 'Failed to fetch' || err.name === 'TypeError') {
+        setError('Connection Error: Vercel cannot reach the backend. Please check VITE_API_URL or deploy your backend to Render.');
+      } else {
+        setError('Invalid email or password');
+      }
     }
   };
 

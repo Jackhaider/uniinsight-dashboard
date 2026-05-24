@@ -5,16 +5,14 @@ from app.api.v1.api import api_router
 from app.db.base import Base
 from app.db.session import engine
 
-# Automatically create database tables for demo purposes 
-# (in production, use Alembic)
-Base.metadata.create_all(bind=engine)
-
 # Seed database with initial users and data
+# This script internally creates all tables safely by importing models first.
 try:
     from seed_db import seed_database
     seed_database()
 except Exception as e:
-    print(f"Skipping seeding: {e}")
+    import traceback
+    print(f"Skipping seeding due to error:\n{traceback.format_exc()}")
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
