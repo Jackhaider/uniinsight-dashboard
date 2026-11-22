@@ -8,9 +8,10 @@ pypdf
 python-docx
 python-pptx
 google-generativeai
-SQLAlchemy
+SQLAlchemy>=2.0,<2.1
 alembic
 psycopg2-binary
 passlib[bcrypt]
 python-jose[cryptography]
 pydantic-settings
+email-validator
