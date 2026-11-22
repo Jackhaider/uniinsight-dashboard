@@ -25,7 +25,7 @@ def get_leaderboard(
         score = int((p.midterm_marks or 0) * 0.6 + (p.assignments or 0) * 0.4 * 10)
         scored_students.append({
             "id": p.user.id,
-            "name": p.user.full_name,
+            "name": p.user.name,
             "score": score,
             "attendance": p.attendance
         })
