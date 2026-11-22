@@ -65,13 +65,15 @@ def test_postgres_scheme_rewritten_for_sqlalchemy(tmp_path):
         tmp_path,
         "postgres://uniadmin:secret@db.example.invalid:5432/uniinsight",
     )
-    assert out == "postgresql postgresql://uniadmin:secret@db.example.invalid:5432/uniinsight"
+    assert out == "postgresql+psycopg2 postgresql+psycopg2://uniadmin:secret@db.example.invalid:5432/uniinsight"
 
 
 @pytest.mark.subprocess
-def test_postgresql_scheme_left_unchanged(tmp_path):
+def test_postgresql_scheme_pinned_to_psycopg2(tmp_path):
+    # Plain postgresql:// is pinned explicitly: SQLAlchemy 2.1+ would pick psycopg (v3).
     url = "postgresql://uniadmin:secret@db.example.invalid/uniinsight"
-    assert run_python("from app.db.session import db_url; print(db_url)", tmp_path, url) == url
+    expected = "postgresql+psycopg2://uniadmin:secret@db.example.invalid/uniinsight"
+    assert run_python("from app.db.session import db_url; print(db_url)", tmp_path, url) == expected
 
 
 def test_env_file_values_are_loaded(tmp_path, monkeypatch):
