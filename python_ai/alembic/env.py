@@ -20,11 +20,13 @@ import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-from database import Base, DATABASE_URL
-import models
+from app.db.base import Base
+from app.db.session import db_url  # same URL as the app, incl. postgres:// -> postgresql:// fix
+import app.models  # noqa: F401  registers every model on Base.metadata
 
 target_metadata = Base.metadata
-config.set_main_option("sqlalchemy.url", DATABASE_URL)
+# Escape % so configparser interpolation doesn't break URL-encoded passwords.
+config.set_main_option("sqlalchemy.url", db_url.replace("%", "%%"))
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
